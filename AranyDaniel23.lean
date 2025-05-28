@@ -129,7 +129,7 @@ theorem arany2014_beginner_ii_iii_iii (p x y : ℤ) (hp : Prime p) (hp_pos : p >
           contradiction
         · have h5 : (x^2 - 2*x + 2)*(x^2 + 2*x + 2) = p*y^4 := by linarith
           
-          have : IsCoprime (x^2 - 2*x + 2) (x^2 + 2*x + 2) := by
+          have hfacts_coprime : IsCoprime (x^2 - 2*x + 2) (x^2 + 2*x + 2) := by
             refine Int.isCoprime_iff_gcd_eq_one.mpr ?_
             refine Int.gcd_eq_one_iff.mpr ?_
             intro c hc1 hc2
@@ -138,39 +138,81 @@ theorem arany2014_beginner_ii_iii_iii (p x y : ℤ) (hp : Prime p) (hp_pos : p >
             have : (x^2 + 2*x + 2) - (x^2 - 2*x + 2) = 4*x := by ring
             rw [this] at hc3
 
-            have h4ndivc : ¬ 4 ∣ c := by
-              have : ¬ 2 ∣ c := by
-                by_contra!
-                have : 2 ∣ x ^ 2 - 2 * x + 2 := by exact Int.dvd_trans this hc1
-                
-                have h6 : Even (p*y^4) := by
-                  refine Int.even_iff.mpr ?_
-                  obtain ⟨k, hk⟩ := this
+            have h2ndivc : ¬ 2 ∣ c := by
+              by_contra!
+              have : 2 ∣ x ^ 2 - 2 * x + 2 := by exact Int.dvd_trans this hc1
+              
+              have h6 : Even (p*y^4) := by
+                refine Int.even_iff.mpr ?_
+                obtain ⟨k, hk⟩ := this
 
-                  rw [← h5, hk, mul_assoc]
-                  exact Int.mul_emod_right 2 (k * (x ^ 2 + 2 * x + 2))
+                rw [← h5, hk, mul_assoc]
+                exact Int.mul_emod_right 2 (k * (x ^ 2 + 2 * x + 2))
+              
+              have h6_contra : ¬ Even (p*y^4) := by
+                refine Int.not_even_iff_odd.mpr ?_
+                refine Odd.mul ?_ ?_
+                rw [hpn]
+                norm_cast
+                refine Nat.Prime.odd_of_ne_two hpn_prime ?_
+                omega
+                refine Odd.pow ?_
+                refine Int.odd_iff.mpr ?_
+                exact Int.emod_two_ne_zero.mp h3
+              
+              contradiction
+
+            have : IsCoprime c 4 := by
+              refine Int.isCoprime_iff_gcd_eq_one.mpr ?_
+              refine Int.gcd_eq_one_iff.mpr ?_
+              intro d hd1 hd2
+
+              have hd2_is_coprime_2 : IsCoprime d 2 := by
+                symm
+                refine (Prime.coprime_iff_not_dvd ?_).mpr ?_
+                exact Int.prime_two
                 
-                have h6_contra : ¬ Even (p*y^4) := by
-                  refine Int.not_even_iff_odd.mpr ?_
-                  refine Odd.mul ?_ ?_
-                  rw [hpn]
-                  norm_cast
-                  refine Nat.Prime.odd_of_ne_two hpn_prime ?_
-                  omega
-                  refine Odd.pow ?_
-                  refine Int.odd_iff.mpr ?_
-                  exact Int.emod_two_ne_zero.mp h3
+                by_contra!
+                obtain ⟨k, hk⟩ := this
+                
+                have h2div_c: 2 ∣ c := by
+                  rw [hk] at hd1
+                  exact dvd_of_mul_right_dvd hd1
                 
                 contradiction
               
-              omega
-            
-            have : c ∣ x := by
-              sorry
-            
-            sorry
+              have : d ∣ 2 := by exact IsCoprime.dvd_of_dvd_mul_left hd2_is_coprime_2 hd2
+              
+              exact IsCoprime.dvd_of_dvd_mul_left hd2_is_coprime_2 this
 
-          sorry
+            have : c ∣ x := by exact IsCoprime.dvd_of_dvd_mul_left this hc3
+
+            have hc4 : c ∣ x^2 + 2*x := by
+              refine Int.dvd_add ?_ ?_
+              refine dvd_pow this (by decide)
+              exact Dvd.dvd.mul_left this 2
+            
+            have : c ∣ 2 := by
+              have : 2 = (x ^ 2 + 2 * x + 2) - (x^2 + 2*x) := by ring
+              rw [this]
+              exact Int.dvd_sub hc2 hc4
+
+            have hc2_is_coprime_2 : IsCoprime c 2 := by
+              symm
+              refine (Prime.coprime_iff_not_dvd ?_).mpr ?_
+              exact Int.prime_two
+              exact h2ndivc
+            
+            exact IsCoprime.dvd_of_dvd_mul_left hc2_is_coprime_2 this
+
+          have : p ∣ (x ^ 2 - 2 * x + 2) ∨ p ∣ (x ^ 2 + 2 * x + 2) := by
+            refine Prime.dvd_or_dvd hp ?_
+            exact Dvd.intro (y ^ 4) (id (Eq.symm h5))
+          
+          /- now use oktv20 style reasoning -/
+          rcases this with h6 | h6
+          · sorry
+          · sorry
   · intro h
     rcases h with h | h | h | h
     all_goals
