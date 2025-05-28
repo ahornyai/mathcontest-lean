@@ -9,6 +9,8 @@ egyenlet megoldható az egész számok körében
 ----------------------
 Bizonyítsuk, hogy a megoldáshalmaz: (p, x, y) ∈ {(5, 1, 1), (5, 1, -1), (5, -1, 1), (5, -1, -1)}
 -/
+set_option maxHeartbeats 400000
+
 def SolutionSet : Set (ℤ × ℤ × ℤ) := {(5, 1, 1), (5, 1, -1), (5, -1, 1), (5, -1, -1)}
 
 lemma eq_not_solvable_if_both_even {p x y : ℤ} (hp : Prime p) (hx_even : 2 ∣ x) (hy_even : 2 ∣ y) : x^4 + 4 ≠ p*y^4 := by
@@ -271,7 +273,7 @@ theorem arany2014_beginner_ii_iii_iii (p x y : ℤ) (hp : Prime p) (hp_pos : p >
               refine Int.isSquare_natCast_iff.mp ?_
               push_cast
               
-              have : k* (x^2 + 2*x + 2) = y^4 := by nlinarith
+              have : k*(x^2 + 2*x + 2) = y^4 := by nlinarith
               
               rw [hkn, hmn, this]
               refine Even.isSquare_pow (by decide) y
@@ -293,25 +295,73 @@ theorem arany2014_beginner_ii_iii_iii (p x y : ℤ) (hp : Prime p) (hp_pos : p >
 
             have : (r + (x + 1) : ℤ) = 1 ∨ (r + (x + 1) : ℤ) = -1 := by exact Int.eq_one_or_neg_one_of_mul_eq_one this
             
-            rcases this with h6 | h6
-            · have : (r - (x + 1) : ℤ) = 1 := by nlinarith
+            have hx : x=-1 := by rcases this with h6 | h6 <;> nlinarith
+            rw [hx] at h
+
+            have hpy_eq_5 : p*y^4 = 5 := by linarith
+            have hy_le_2 : y < 2 := by
+              by_contra!
+              have : 2^4 ≤ y^4 := by exact pow_le_pow_left₀ (by decide) this 4
+              nlinarith
+            have hy_gt_m2 : -2 < y := by
+              by_contra!
+              have : y^2 ≥ (-2)^2 := by nlinarith
+              have : y^4 ≥ 16 := by nlinarith
+              nlinarith
+            
+            interval_cases y <;> omega
+          · obtain ⟨k, hk⟩ := h6
+            have : 0 ≤ x^2 + 2*x + 2 := by nlinarith
+            
+            rw [hk, mul_nonneg_iff_of_pos_left hp_pos] at this
+            
+            have : ∃n : ℕ, n=k := by exact CanLift.prf k this
+            obtain ⟨kn, hkn⟩ := this
+
+            have : ∃n : ℕ, n=(x^2 - 2*x + 2) := by exact CanLift.prf (x ^ 2 - 2 * x + 2) (by nlinarith)
+            obtain ⟨mn, hmn⟩ := this
+
+            have hkn_mn_sq : IsSquare (kn*mn) := by
+              refine Int.isSquare_natCast_iff.mp ?_
+              push_cast
               
-              have : r=1 := by linarith
-              have hx : x=-1 := by linarith
-              rw [hx] at h
+              have : k*(x^2 - 2*x + 2) = y^4 := by nlinarith
               
-              have hpy_eq_5 : p*y^4 = 5 := by linarith
-              have hy_le_2 : y < 2 := by
-                by_contra!
-                have : 2^4 ≤ y^4 := by exact pow_le_pow_left₀ (by decide) this 4
-                nlinarith
-              have hy_gt_m2 : -2 < y := by
-                by_contra!
-                sorry
-              
-              sorry
-            · sorry
-          · sorry
+              rw [hkn, hmn, this]
+              refine Even.isSquare_pow (by decide) y
+            
+            have hkn_mn_coprime : Nat.Coprime kn mn := by
+              refine Nat.isCoprime_iff_coprime.mp ?_
+              rw [hkn, hmn]
+              rw [hk] at hfacts_coprime
+
+              symm
+              exact IsCoprime.of_mul_right_right hfacts_coprime
+            
+            have : IsSquare kn ∧ IsSquare mn := by exact exists_sq_factors_if_coprime hkn_mn_sq hkn_mn_coprime
+            obtain ⟨kn_sq, mn_sq⟩ := this
+            obtain ⟨r, hr⟩ := mn_sq
+
+            have : r^2 - (x-1)^2 = 1 := by nlinarith
+            rw [sq_sub_sq] at this
+
+            have : (r + (x - 1) : ℤ) = 1 ∨ (r + (x - 1) : ℤ) = -1 := by exact Int.eq_one_or_neg_one_of_mul_eq_one this
+            
+            have hx : x=1 := by rcases this with h6 | h6 <;> nlinarith
+            rw [hx] at h
+
+            have hpy_eq_5 : p*y^4 = 5 := by linarith
+            have hy_le_2 : y < 2 := by
+              by_contra!
+              have : 2^4 ≤ y^4 := by exact pow_le_pow_left₀ (by decide) this 4
+              nlinarith
+            have hy_gt_m2 : -2 < y := by
+              by_contra!
+              have : y^2 ≥ (-2)^2 := by nlinarith
+              have : y^4 ≥ 16 := by nlinarith
+              nlinarith
+            
+            interval_cases y <;> omega
   · intro h
     rcases h with h | h | h | h
     all_goals
