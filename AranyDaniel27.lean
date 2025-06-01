@@ -62,8 +62,44 @@ lemma exists_nat_of_sq {x : ℕ} (h : IsSquare (10*x)) : ∃k : ℕ, x=10*k^2 :=
   rw [this, hr]
   use r/10
 
-  have : 10 ∣ r*r := by exact Dvd.intro x hr
-  have : 10 ∣ r := by sorry
+  have : 2 ∣ r^2 := by
+    rw [Nat.pow_two]
+    omega
+  
+  have hr_div_2 : 2 ∣ r := by
+    have : Even (r^2) := by exact (even_iff_exists_two_nsmul (r ^ 2)).mpr this
+    
+    refine Even.two_dvd ?_
+    rw [Nat.even_pow' (by decide)] at this
+
+    exact this
+  
+  have : 5 ∣ r^2 := by
+    rw [Nat.pow_two]
+    omega
+  
+  have hr_div_5 : 5 ∣ r := by
+    by_cases h1: r^2=0
+    · have : r=0 := by exact pow_eq_zero h1
+      rw [this]
+
+      decide
+    · have : 5 ∈ (r^2).primeFactors := by
+        refine Nat.mem_primeFactors.mpr ?_
+
+        exact ⟨(by decide), this, h1⟩
+      
+      refine Nat.dvd_of_mem_primeFactors ?_
+      rw [Nat.primeFactors_pow] at this
+      
+      exact this
+      decide
+
+  have : 10 ∣ r := by
+    have : 10 = 2*5 := by norm_num
+    rw [this]
+
+    exact Nat.Coprime.mul_dvd_of_dvd_of_dvd rfl hr_div_2 hr_div_5
   
   have : (10*(r/10)) = r := by exact Nat.mul_div_cancel' this
   
