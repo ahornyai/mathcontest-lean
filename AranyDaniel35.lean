@@ -60,21 +60,17 @@ lemma consec_even_prod_eq_two_pow {a n m: ℕ} (a_geq_1 : a ≥ 1) (h1: 2^n = a+
       exact two_pow_eq_4
 
 lemma pow_2_iff_prime_factor_is_2 {a : ℕ} (h : Nat.primeFactors a = {2}) : ∃ x, x>0 ∧ a=2^x := by
-  have even_a : Even a := by
-    have : 2 ∈ Nat.primeFactors a := by
-      rw [h]
-      exact Finset.mem_singleton.mpr rfl
-    
-    have : 2 ∣ a := by exact Nat.dvd_of_mem_primeFactors this
-    exact (even_iff_exists_two_nsmul a).mpr this
+  have : 2 ∈ Nat.primeFactors a := by
+    rw [h]
+    exact Finset.mem_singleton.mpr rfl
+  
+  have a_div_2 : 2 ∣ a := by exact Nat.dvd_of_mem_primeFactors this
 
   have a_neq_0 : a ≠ 0 := by
     by_contra!
     rw [this] at h
     rw [Nat.primeFactors_zero] at h
     contradiction
-
-  have a_div_2 : 2 ∣ a := by exact even_iff_two_dvd.mp even_a
 
   use Nat.factorization a 2
 
