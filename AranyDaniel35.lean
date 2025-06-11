@@ -44,7 +44,7 @@ theorem arany2016_beginner_iii_ii_i {p a b : ℕ} (hp : Nat.Prime p) (ha : a > 1
       
       rw [h] at hlhs_even
       contradiction
-    
+
     have hp_gt_2 : p > 2 := by
       by_contra!
       interval_cases p
@@ -141,10 +141,11 @@ theorem arany2016_beginner_iii_ii_i {p a b : ℕ} (hp : Nat.Prime p) (ha : a > 1
         rw [← hp1]
         linarith
       rw [← geom_sum_mul, ← hp1] at h3
+
+      have ha_succ : a = (a-1) + 1 := by omega
       
       have : Odd (∑ i ∈ Finset.range a, p ^ i) := by
-        have : a = (a-1) + 1 := by omega
-        rw [this, Finset.sum_range_succ']
+        rw [ha_succ, Finset.sum_range_succ']
         
         refine Even.add_odd ?_ (by exact Nat.odd_iff.mpr rfl)
         refine Nat.even_iff.mpr ?_
@@ -164,7 +165,28 @@ theorem arany2016_beginner_iii_ii_i {p a b : ℕ} (hp : Nat.Prime p) (ha : a > 1
 
         omega
       
-      --have : (p - 1) ∣ p^a - 1^a := by exact nat_sub_dvd_pow_sub_pow p 1 a
-      
-      sorry
+      have : (∑ i ∈ Finset.range a, p ^ i) = 1 := by sorry
+      rw [ha_succ, Finset.sum_range_succ'] at this
+
+      have : ∑ k ∈ Finset.range (a - 1), p ^ (k + 1) > 0 := by
+        refine Nat.zero_lt_of_ne_zero ?_
+        by_contra! h4
+        rw [Finset.sum_eq_zero_iff] at h4
+
+        have : p=0 := by
+          specialize h4 0
+          
+          have : p^(0+1) = p := by ring
+          rw [this] at h4
+
+          have : 0 ∈ Finset.range (a-1) := by
+            refine Finset.mem_range.mpr ?_
+            linarith
+          
+          exact h4 this
+        
+        rw [this] at hp
+        contradiction
+
+      linarith
   · sorry
