@@ -11,7 +11,7 @@ Bizonyítsuk, hogy az egyetlen ilyen függvény az f: ℝ → ℝ, f(x) = 3
 -/
 def SolutionSet : (Set (ℝ → ℝ)) := {f | ∀ x, f x = 3}
 
-theorem oktv2024_ii_iiii {f : ℝ → ℝ} : f ∈ SolutionSet ↔ ∀ x, (f (4-x))^2 + 4*(f (x+4))^2 - 9 = 2 * (f (4-x) + 3) * (2 * f (x+4) - 3) := by
+theorem oktv2024_ii_iv {f : ℝ → ℝ} : f ∈ SolutionSet ↔ ∀ x, (f (4-x))^2 + 4*(f (x+4))^2 - 9 = 2 * (f (4-x) + 3) * (2 * f (x+4) - 3) := by
   constructor
   · intro h x
     repeat rw [h]
