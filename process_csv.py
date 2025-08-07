@@ -8,7 +8,7 @@ for problem in problems[1:]:
     
     # setup markdown link
     if name.startswith("Arany"):
-        name = f"[{name}](Arany/{name}.lean)"
+        name = f"[{name}](AranyDaniel/{name}.lean)"
     elif name.startswith("OKTV"):
         name = f"[{name}](OKTV/{name}.lean)"
     
