@@ -2,22 +2,23 @@
 
 **mathcontest-lean** is a collection of formalized mathematics olympiad problems written in [Lean 4](https://leanprover-community.github.io/). The goal of this project is to rigorously verify solutions to contest problems.
 
----
-
 ## 🔧 Structure
 
 - `OKTV/` — Problems from the [Hungarian National Secondary School Academic Competition](https://www.oktatas.hu/kozneveles/tanulmanyi_versenyek_/oktv_kereteben/versenyfeladatok_javitasi_utmutatok)
 - `AranyDaniel/` — Problems from the [Dániel Arany Secondary School Mathematics Competition](https://www.bolyai.hu/versenyek-arany-daniel-matematikaverseny/)
 
----
+## ▶️ Trying It Out
+
+You can try out the proofs directly in your browser using the [Lean 4 Web Editor](https://live.lean-lang.org/).  
+Just copy and paste the Lean code from this repository into the editor — no installation required.
 
 ## ❗ Mistakes in Official Solutions
 
 Sometimes even official solutions contain subtle mistakes. This section tracks such discoveries made during formalization.
 
-todo: OKTV2006_I_II_P5
-
----
+|Problem|Official Solution            |Mistake|
+|-------|-----------------------------|-------|
+|[OKTV2006_I_II_P5](OKTV/OKTV2006_I_II_P5.lean)|[oktatas.hu](https://www.oktatas.hu/pub_bin/dload/kozoktatas/tanulmanyi_versenyek/oktv/oktv_2006_2007/mat1_javut2f_oktv0607.pdf#page=7)|The official solution doesn't check p=19 after discovering that 7 < p and p < 21, luckily it doesn't affect the final result.|
 
 ## ✅ List of formalized problems
 

@@ -6,8 +6,6 @@ Oldja meg a valós számok halmazán a következő egyenletet:
 √(x^2 + x - 6) - √(-x^2 + 7*x - 10) = √(x^2 + 9*x - 22)
 --------------------------------
 igazoljuk, hogy az egyenlet egyetlen megoldása az x=2
-https://www.oktatas.hu/pub_bin/dload/kozoktatas/tanulmanyi_versenyek/oktv/oktv2019_2020_2ford/mat1_javut2f_oktv_1920.pdf
-hibás megoldókulcs!! (6) egyenlet x-13 helyett -x-3
 -/
 theorem oktv2019_i_ii_iii (x : ℝ) (h1 : x^2 + x - 6 ≥ 0) (h2 : -x^2 + 7*x - 10 ≥ 0)
   : √(x^2 + x - 6) - √(-x^2 + 7*x - 10) = √(x^2 + 9*x - 22) ↔ x=2 := by
